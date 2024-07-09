@@ -16,6 +16,7 @@ const Login = () => {
     try {
       const response = await axios.post('/api/auth/login', credentials); // Corrected endpoint path
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('role', response.data.role); // Store the user role in local storage
       navigate('/dashboard');
       toast.success('Login successful!');
     } catch (error) {

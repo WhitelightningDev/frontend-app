@@ -13,16 +13,21 @@ const AddCredential = () => {
           'x-auth-token': token,
         },
       };
+      // Send a POST request to add the credential
       await axios.post('/api/credentials', credential, config);
       toast.success('Credential added successfully!');
+      // Clear the form after successful submission
+      setCredential({ title: '', username: '', password: '', division: '' });
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {
+        // Handle validation errors
         const errors = error.response.data.errors;
         Object.keys(errors).forEach(field => {
           toast.error(`${field}: ${errors[field].message}`);
         });
       } else {
-        console.error('Error adding credential:', error.response.data.msg);
+        // Handle server errors
+        console.error('Error adding credential:', error.response?.data?.msg || error.message);
         toast.error('Error adding credential.');
       }
     }
@@ -62,7 +67,7 @@ const AddCredential = () => {
         />
       </div>
       <div className="form-group">
-        <label htmlFor="division">Division</label>
+        <label htmlFor="division">Division ID</label>
         <input
           type="text"
           className="form-control"

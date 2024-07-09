@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -11,12 +12,12 @@ const Dashboard = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="mb-4">Dashboard</h1>
+      <h1 className="mb-4 text-center">Dashboard</h1>
 
-      <div className="card mb-3">
-        <div className="card-header">
-          Actions
-          <button className="btn btn-danger btn-sm float-end" onClick={handleLogout}>Logout</button>
+      <div className="card shadow mb-3">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <span>Actions</span>
+          <button className="btn btn-danger btn-sm" onClick={handleLogout}>Logout</button>
         </div>
         <div className="card-body">
           <ul className="list-group">
