@@ -1,36 +1,60 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Home from './pages/Home';
 import Login from './components/Login';
-import Register from './components/Register';
-import AssignUser from './pages/AssignUser';
 import Dashboard from './components/Dashboard';
-import NotFound from './pages/NotFound';
-import ManageRoles from './pages/ManageRoles';
-import UpdateCredential from './pages/UpdateCredential';
-import ViewCredentials from './pages/ViewCredentials';
-import AddCredential from './pages/AddCredential';
+import ManageRoles from './components/ManageRoles';
+import UpdateCredential from './components/UpdateCredential';
+import ViewCredentials from './components/ViewCredentials';
+import AddCredential from './components/AddCredential';
 
 function App() {
+  const [userRole, setUserRole] = useState(localStorage.getItem('role'));
+  const [userName, setUserName] = useState(localStorage.getItem('username'));
+
+  const handleLogin = (role, username) => {
+    setUserRole(role);
+    setUserName(username);
+    localStorage.setItem('role', role);
+    localStorage.setItem('username', username);
+  };
+
+  const handleLogout = () => {
+    setUserRole(null);
+    setUserName(null);
+    localStorage.removeItem('role');
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+  };
+
   return (
     <Router>
       <div className="App">
         <ToastContainer autoClose={3000} hideProgressBar />
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/AssignUser" element={<AssignUser />} />
-          <Route path="/manage-roles" element={<ManageRoles />} />
-          <Route path="/update-credential" element={<UpdateCredential />} />
-          <Route path="/view-credentials" element={<ViewCredentials />} />
-          <Route path="/add-credential" element={<AddCredential />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+
+          {userRole && (
+            <>
+              <Route path="/dashboard" element={<Dashboard userRole={userRole} userName={userName} onLogout={handleLogout} />} />
+              {userRole === 'Admin' && <Route path="/manage-roles" element={<ManageRoles />} />}
+              {(userRole === 'Admin' || userRole === 'Manager') && (
+                <>
+                  <Route path="/update-credential" element={<UpdateCredential />} />
+                  <Route path="/view-credentials" element={<ViewCredentials />} />
+                  <Route path="/add-credential" element={<AddCredential />} />
+                </>
+              )}
+              {userRole === 'Normal' && <Route path="*" element={<Navigate to="/" />} />}
+            </>
+          )}
+
+          {!userRole && <Route path="*" element={<Navigate to="/login" />} />}
         </Routes>
       </div>
     </Router>

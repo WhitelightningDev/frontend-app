@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from '../services/api';
 import { toast } from 'react-toastify';
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -13,15 +14,22 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await axios.post('/api/auth/login', credentials); // Corrected endpoint path
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('role', response.data.role); // Store the user role in local storage
+      const response = await axios.post('/api/auth/login', credentials);
+      const { token, role, username } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', role);
+      localStorage.setItem('username', username);
+      onLogin(role, username);
       navigate('/dashboard');
-      toast.success('Login successful!');
+      toast.success(`Login successful! Welcome, ${username}`);
     } catch (error) {
+      setLoading(false);
       if (error.response && error.response.data) {
         toast.error(error.response.data.msg || 'Login failed. Please try again.');
+      } else if (error.message) {
+        toast.error(`Login failed. ${error.message}`);
       } else {
         toast.error('Login failed. An error occurred.');
       }
@@ -60,7 +68,9 @@ const Login = () => {
                     required
                   />
                 </div>
-                <button type="submit" className="btn btn-primary btn-block">Login</button>
+                <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                  {loading ? 'Logging in...' : 'Login'}
+                </button>
               </form>
             </div>
           </div>
