@@ -11,11 +11,13 @@ import ManageRoles from './components/ManageRoles';
 import UpdateCredential from './components/UpdateCredential';
 import ViewCredentials from './components/ViewCredentials';
 import AddCredential from './components/AddCredential';
+import Register from './components/Register'; // Import Register component
 
 function App() {
   const [userRole, setUserRole] = useState(localStorage.getItem('role'));
   const [userName, setUserName] = useState(localStorage.getItem('username'));
 
+  // Function to handle user login
   const handleLogin = (role, username) => {
     setUserRole(role);
     setUserName(username);
@@ -23,6 +25,7 @@ function App() {
     localStorage.setItem('username', username);
   };
 
+  // Function to handle user logout
   const handleLogout = () => {
     setUserRole(null);
     setUserName(null);
@@ -35,14 +38,18 @@ function App() {
     <Router>
       <div className="App">
         <ToastContainer autoClose={3000} hideProgressBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
 
+        {/* Define Routes */}
+        <Routes>
+          <Route path="/" element={<Home />} /> {/* Home page route */}
+          <Route path="/login" element={<Login onLogin={handleLogin} />} /> {/* Login page route */}
+          <Route path="/register" element={<Register />} /> {/* Register page route */}
+
+          {/* Protected routes for authenticated users */}
           {userRole && (
             <>
               <Route path="/dashboard" element={<Dashboard userRole={userRole} userName={userName} onLogout={handleLogout} />} />
-              {userRole === 'Admin' && <Route path="/manage-roles" element={<ManageRoles />} />}
+              {userRole === 'Admin' && <Route path="/manage-roles" element={<ManageRoles />} />} {/* Admin-only route */}
               {(userRole === 'Admin' || userRole === 'Manager') && (
                 <>
                   <Route path="/update-credential" element={<UpdateCredential />} />
@@ -50,16 +57,16 @@ function App() {
                   <Route path="/add-credential" element={<AddCredential />} />
                 </>
               )}
-              {userRole === 'Normal' && <Route path="manage-roles" element={<ManageRoles to="/" />} />}
-              {(userRole === "Normal") &&(
+              {userRole === 'Normal' && (
                 <>
-                <Route path="/view-credentials" element={<ViewCredentials />} />
-                <Route path="/add-credential" element={<AddCredential />} />
+                  <Route path="/view-credentials" element={<ViewCredentials />} />
+                  <Route path="/add-credential" element={<AddCredential />} />
                 </>
               )}
             </>
           )}
 
+          {/* Redirect to login page if not authenticated */}
           {!userRole && <Route path="*" element={<Navigate to="/login" />} />}
         </Routes>
       </div>

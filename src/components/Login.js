@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from '../services/api';
 import { toast } from 'react-toastify';
 
@@ -8,14 +8,17 @@ const Login = ({ onLogin }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Handle input change
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // Send login request
       const response = await axios.post('/api/auth/login', credentials);
       const { token, role, username } = response.data;
 
@@ -61,8 +64,10 @@ const Login = ({ onLogin }) => {
         <div className="col-md-6">
           <div className="card">
             <div className="card-body">
+              {/* Login Form */}
               <h2 className="card-title text-center mb-4">Login</h2>
               <form onSubmit={handleSubmit}>
+                {/* Username Input */}
                 <div className="form-group">
                   <label htmlFor="username">Username</label>
                   <input
@@ -75,6 +80,7 @@ const Login = ({ onLogin }) => {
                     required
                   />
                 </div>
+                {/* Password Input */}
                 <div className="form-group">
                   <label htmlFor="password">Password</label>
                   <input
@@ -87,10 +93,21 @@ const Login = ({ onLogin }) => {
                     required
                   />
                 </div>
+                {/* Submit Button */}
                 <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
                   {loading ? 'Logging in...' : 'Login'}
                 </button>
               </form>
+
+              {/* Register Button */}
+              <div className="text-center mt-3">
+                <Link to="/register" className="btn btn-link">Register</Link>
+              </div>
+
+              {/* Back to Home Button */}
+              <div className="text-center mt-3">
+                <Link to="/" className="btn btn-link">Back to Home</Link>
+              </div>
             </div>
           </div>
         </div>
