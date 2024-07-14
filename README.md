@@ -1,6 +1,4 @@
-I've updated your README file with the example users. Here's the revised content:
 
-```markdown
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -77,6 +75,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - Admin user: adminuser, password1
 - Manager user: manageruser, password2
 - Normal user: normaluser, password3
-```
-
-Feel free to adjust the formatting or add any additional information you deem necessary.
