@@ -20,7 +20,9 @@ const UpdateCredential = () => {
     try {
       const response = await axios.get(`/api/credentials/${id}`);
       setCredential({
-        ...response.data,
+        title: response.data.title,
+        username: response.data.username,
+        password: response.data.password,
         division: response.data.division._id,
       });
     } catch (error) {
@@ -57,33 +59,44 @@ const UpdateCredential = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="mb-4 text-center">Update Credential</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
-          <input type="text" className="form-control" id="title" name="title" value={credential.title} onChange={handleChange} required />
+      <div className="row">
+        <div className="col-md-8 offset-md-2">
+          <div className="card">
+            <h5 className="card-header text-center">Update Credential</h5>
+            <div className="card-body">
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label htmlFor="title">Title</label>
+                  <input type="text" className="form-control" id="title" name="title" value={credential.title} onChange={handleChange} required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="username">Username</label>
+                  <input type="text" className="form-control" id="username" name="username" value={credential.username} onChange={handleChange} required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
+                  <input type="password" className="form-control" id="password" name="password" value={credential.password} onChange={handleChange} required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="division">Division</label>
+                  <select className="form-control" id="division" name="division" value={credential.division} onChange={handleChange} required>
+                    <option value="">Select Division</option>
+                    {divisions.map((division) => (
+                      <option key={division._id} value={division._id}>
+                        {division.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button type="submit" className="btn btn-primary btn-block">Update Credential</button>
+              </form>
+            </div>
+          </div>
+          <button className="btn btn-secondary mt-3" onClick={() => navigate('/dashboard')}>
+            Back to Dashboard
+          </button>
         </div>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input type="text" className="form-control" id="username" name="username" value={credential.username} onChange={handleChange} required />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input type="password" className="form-control" id="password" name="password" value={credential.password} onChange={handleChange} required />
-        </div>
-        <div className="form-group">
-          <label htmlFor="division">Division</label>
-          <select className="form-control" id="division" name="division" value={credential.division} onChange={handleChange} required>
-            <option value="">Select Division</option>
-            {divisions.map((division) => (
-              <option key={division._id} value={division._id}>
-                {division.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button type="submit" className="btn btn-primary btn-block">Update Credential</button>
-      </form>
+      </div>
     </div>
   );
 };
