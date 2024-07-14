@@ -50,7 +50,13 @@ function App() {
                   <Route path="/add-credential" element={<AddCredential />} />
                 </>
               )}
-              {userRole === 'Normal' && <Route path="*" element={<Navigate to="/" />} />}
+              {userRole === 'Normal' && <Route path="manage-roles" element={<ManageRoles to="/" />} />}
+              {(userRole === "Normal") &&(
+                <>
+                <Route path="/view-credentials" element={<ViewCredentials />} />
+                <Route path="/add-credential" element={<AddCredential />} />
+                </>
+              )}
             </>
           )}
 

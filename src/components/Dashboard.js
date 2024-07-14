@@ -40,6 +40,7 @@ const Dashboard = ({ onLogout }) => {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setDivisions(divisionsResponse.data);
+      
 
       // Fetch user details for Admin
       if (role === 'Admin') {

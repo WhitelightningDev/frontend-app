@@ -7,7 +7,6 @@ const api = axios.create({
   },
 });
 
-// Add a request interceptor to include the token in the headers
 api.interceptors.request.use(
   async (config) => {
     const token = localStorage.getItem('token');
@@ -30,10 +29,6 @@ api.interceptors.request.use(
           config.headers['x-auth-token'] = refreshedToken;
         } catch (error) {
           console.error('Failed to refresh token:', error.message);
-          // Handle token refresh failure (e.g., redirect to login)
-          // Example: logout user or redirect to login page
-          // You can implement your logic here based on your application flow
-          // For simplicity, here we remove the token from localStorage and redirect to login
           localStorage.removeItem('token');
           window.location.href = '/login'; // Redirect to login page
           return Promise.reject(error);

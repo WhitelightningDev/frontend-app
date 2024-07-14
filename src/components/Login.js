@@ -18,14 +18,33 @@ const Login = ({ onLogin }) => {
     try {
       const response = await axios.post('/api/auth/login', credentials);
       const { token, role, username } = response.data;
+
+      // Log the response data for debugging
+      console.log('Response:', response.data);
+
+      // Validate the response data
+      if (!token || !role || !username) {
+        throw new Error('Invalid response data');
+      }
+
+      // Store data in localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
       localStorage.setItem('username', username);
+
+      // Update the parent component state
       onLogin(role, username);
+
+      // Navigate to the dashboard
       navigate('/dashboard');
+
+      // Show success message
       toast.success(`Login successful! Welcome, ${username}`);
     } catch (error) {
       setLoading(false);
+      console.error('Login error:', error);
+
+      // Show error message
       if (error.response && error.response.data) {
         toast.error(error.response.data.msg || 'Login failed. Please try again.');
       } else if (error.message) {
