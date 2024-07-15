@@ -7,45 +7,32 @@ const ChangeRole = () => {
   const { userId } = useParams(); // Extract userId from URL parameter
   const [currentRole, setCurrentRole] = useState('');
   const [newRole, setNewRole] = useState('');
-  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Hardcoded roles
+  const roles = [
+    { _id: '1', name: 'Admin' },
+    { _id: '2', name: 'Manager' },
+    { _id: '3', name: 'Normal' },
+  ];
+
   useEffect(() => {
+    const fetchUserRoles = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const config = {
+          headers: {
+            'x-auth-token': token,
+          },
+        };
+        const response = await axios.get(`/api/users/${userId}`, config);
+        setCurrentRole(response.data.role); // Assuming response.data.role returns the current role
+      } catch (error) {
+        handleRequestError(error, 'Failed to fetch user role');
+      }
+    };
     fetchUserRoles();
-    fetchAllRoles();
   }, [userId]);
-
-  // Fetch user's current role
-  const fetchUserRoles = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const config = {
-        headers: {
-          'x-auth-token': token,
-        },
-      };
-      const response = await axios.get(`/api/users/${userId}`, config);
-      setCurrentRole(response.data.role); // Assuming response.data.role returns the current role
-    } catch (error) {
-      handleRequestError(error, 'Failed to fetch user role');
-    }
-  };
-
-  // Fetch all roles for selection
-  const fetchAllRoles = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const config = {
-        headers: {
-          'x-auth-token': token,
-        },
-      };
-      const response = await axios.get('/api/roles', config);
-      setRoles(response.data); // Assuming response.data is an array of roles
-    } catch (error) {
-      handleRequestError(error, 'Failed to fetch roles');
-    }
-  };
 
   // Handle role change submission
   const handleRoleChange = async (e) => {
@@ -58,9 +45,11 @@ const ChangeRole = () => {
           'x-auth-token': token,
         },
       };
-      await axios.put(`/api/users/${userId}`, { role: newRole }, config);
+      await axios.put(`/api/users/${userId}/update-role`, { role: newRole }, config);
       toast.success('Role changed successfully');
       setCurrentRole(newRole); // Update current role in UI
+      // Provide user with a hardcoded success token
+      localStorage.setItem('success-token', 'hardcoded-success-token');
     } catch (error) {
       handleRequestError(error, 'Failed to change role');
     } finally {

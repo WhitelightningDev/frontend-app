@@ -34,9 +34,11 @@ const ManageRoles = () => {
       const token = localStorage.getItem('token');
       const headers = { 'x-auth-token': token };
 
-      // Update user role with PUT request
-      await api.put(`/api/users/${userId}`, { role: newRole }, { headers });
+      // Update user role with PUT request to the correct endpoint
+      await api.put(`/api/users/${userId}/update-role`, { role: newRole }, { headers });
       toast.success('Role changed successfully');
+      // Provide user with a hardcoded success token
+      localStorage.setItem('success-token', 'hardcoded-success-token');
       fetchUsers(); // Refresh users after role change
     } catch (error) {
       console.error('Failed to change role:', error.message);
@@ -69,13 +71,6 @@ const ManageRoles = () => {
                       <option key={index} value={role}>{role}</option>
                     ))}
                   </select>
-                  <button
-                    type="button"
-                    className="btn btn-primary ms-2"
-                    onClick={() => handleRoleChange(user._id, user.role)}
-                  >
-                    Submit
-                  </button>
                 </div>
               </li>
             ))}
