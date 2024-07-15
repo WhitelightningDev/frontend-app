@@ -78,12 +78,16 @@ const Dashboard = ({ onLogout }) => {
           </button>
         </div>
         <div className="card-body">
+          <p>
+            This dashboard provides access to manage various aspects based on your role within the organization.
+          </p>
+
           <ul className="list-group">
             {/* Render Manage Roles link for Admin */}
             {userRole === 'Admin' && (
               <li className="list-group-item">
                 <Link to="/manage-roles" className="text-decoration-none">
-                  Manage Roles
+                  Manage Roles: View, assign, and modify roles for users.
                 </Link>
               </li>
             )}
@@ -93,12 +97,12 @@ const Dashboard = ({ onLogout }) => {
               <>
                 <li className="list-group-item">
                   <Link to="/view-credentials" className="text-decoration-none">
-                    View Credentials
+                    View Credentials: See all credentials stored within the system.
                   </Link>
                 </li>
                 <li className="list-group-item">
                   <Link to="/add-credential" className="text-decoration-none">
-                    Add Credential
+                    Add Credential: Add a new credential to the system.
                   </Link>
                 </li>
               </>
@@ -108,7 +112,7 @@ const Dashboard = ({ onLogout }) => {
             {['Admin', 'Manager'].includes(userRole) && (
               <li className="list-group-item">
                 <Link to="/update-credential" className="text-decoration-none">
-                  Update Credential
+                  Update Credential: Modify existing credentials.
                 </Link>
               </li>
             )}
@@ -153,7 +157,7 @@ const Dashboard = ({ onLogout }) => {
                     {/* Render actions to assign/unassign users and change roles */}
                     <div className="mt-2">
                       <Link to={`/change-role/${user._id}`} className="btn btn-sm btn-warning">
-                        Change Role
+                        Change Role: Modify the role assigned to this user.
                       </Link>
                     </div>
                   </li>

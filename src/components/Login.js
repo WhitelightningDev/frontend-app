@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from '../services/api';
 import { toast } from 'react-toastify';
+import logoSVG from '../assets/undraw_secure_login_pdn4.svg'; // Import your SVG file here
 
 const Login = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -64,6 +65,11 @@ const Login = ({ onLogin }) => {
         <div className="col-md-6">
           <div className="card">
             <div className="card-body">
+              {/* SVG Logo */}
+              <div className="text-center mb-4">
+                <img src={logoSVG} alt="Logo" style={{ maxWidth: '100%', maxHeight: '150px' }} />
+              </div>
+
               {/* Login Form */}
               <h2 className="card-title text-center mb-4">Login</h2>
               <form onSubmit={handleSubmit}>
