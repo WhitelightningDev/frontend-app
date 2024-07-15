@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../services/api'; // Adjust import path based on your project structure
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const ChangeRole = () => {
   const { userId } = useParams(); // Extract userId from URL parameter
   const [currentRole, setCurrentRole] = useState('');
   const [newRole, setNewRole] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading state
 
   // Hardcoded roles
   const roles = [
@@ -29,6 +29,8 @@ const ChangeRole = () => {
         setCurrentRole(response.data.role); // Assuming response.data.role returns the current role
       } catch (error) {
         handleRequestError(error, 'Failed to fetch user role');
+      } finally {
+        setLoading(false); // Set loading to false regardless of success or failure
       }
     };
     fetchUserRoles();
@@ -74,37 +76,50 @@ const ChangeRole = () => {
       console.error('Error setting up the request:', error.message);
       toast.error('Request setup error');
     }
+    setLoading(false); // Ensure loading state is set to false on error
   };
 
   if (loading) {
-    return <p>Loading...</p>; // Optional loading indicator
+    return <p>Loading...</p>; // Show loading indicator while fetching user data
   }
 
   return (
     <div className="container mt-5">
-      <h1 className="mb-4 text-center">Change User Role</h1>
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <h4>User ID: {userId}</h4>
-          <h5>Current Role: {currentRole}</h5>
-          <form onSubmit={handleRoleChange}>
-            <div className="mb-3">
-              <label htmlFor="newRole" className="form-label">Select New Role:</label>
-              <select
-                id="newRole"
-                className="form-select"
-                value={newRole}
-                onChange={(e) => setNewRole(e.target.value)} // Update newRole state on change
-                required
-              >
-                <option value="">Select Role</option>
-                {roles.map((role) => (
-                  <option key={role._id} value={role.name}>{role.name}</option>
-                ))}
-              </select>
+      <div className="card">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <h1 className="text-center">Change User Role</h1>
+          <Link to="/dashboard" className="btn btn-primary">
+            Back to Dashboard
+          </Link>
+        </div>
+        <div className="card-body">
+          <p className="lead text-center">
+            Select a new role for the user and submit the form to update their role.
+          </p>
+          <div className="row justify-content-center">
+            <div className="col-md-6">
+              <h4>User ID: {userId}</h4>
+              <h5>Current Role: {currentRole}</h5>
+              <form onSubmit={handleRoleChange}>
+                <div className="mb-3">
+                  <label htmlFor="newRole" className="form-label">Select New Role:</label>
+                  <select
+                    id="newRole"
+                    className="form-select"
+                    value={newRole}
+                    onChange={(e) => setNewRole(e.target.value)} // Update newRole state on change
+                    required
+                  >
+                    <option value="">Select Role</option>
+                    {roles.map((role) => (
+                      <option key={role._id} value={role.name}>{role.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <button type="submit" className="btn btn-primary">Change Role</button>
+              </form>
             </div>
-            <button type="submit" className="btn btn-primary">Change Role</button>
-          </form>
+          </div>
         </div>
       </div>
     </div>
