@@ -21,7 +21,7 @@ const ChangeRole = () => {
       const token = localStorage.getItem('token');
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`,
+          'x-auth-token': token,
         },
       };
       const response = await axios.get(`/api/users/${userId}/roles`, config);
@@ -34,7 +34,13 @@ const ChangeRole = () => {
   // Fetch all roles for selection
   const fetchAllRoles = async () => {
     try {
-      const response = await axios.get('/api/roles');
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          'x-auth-token': token,
+        },
+      };
+      const response = await axios.get('/api/roles', config);
       setRoles(response.data);
     } catch (error) {
       handleRequestError(error, 'Failed to fetch roles');
@@ -49,7 +55,7 @@ const ChangeRole = () => {
       const token = localStorage.getItem('token');
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`,
+          'x-auth-token': token,
         },
       };
       await axios.put(`/api/users/${userId}/roles`, { newRole }, config);
