@@ -14,39 +14,35 @@ const Dashboard = ({ onLogout }) => {
   useEffect(() => {
     const role = localStorage.getItem('role');
     const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token');
 
-    if (!role || !username) {
-      // Redirect to login if userRole or userName is not defined
+    if (!role || !username || !token) {
+      // Redirect to login if userRole, userName, or token is not defined
       navigate('/login');
     } else {
       // Set user role and name
       setUserRole(role);
       setUserName(username);
       // Fetch data based on user's role
-      fetchDataBasedOnRole(role);
+      fetchDataBasedOnRole(role, token);
     }
   }, [navigate]);
 
-  const fetchDataBasedOnRole = async (role) => {
+  const fetchDataBasedOnRole = async (role, token) => {
     try {
+      const headers = { 'x-auth-token': token };
+
       // Fetch all credentials
-      const credentialsResponse = await axios.get('http://localhost:3030/api/credentials', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const credentialsResponse = await axios.get('http://localhost:3030/api/credentials', { headers });
       setCredentials(credentialsResponse.data);
 
       // Fetch all divisions
-      const divisionsResponse = await axios.get('http://localhost:3030/api/divisions', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const divisionsResponse = await axios.get('http://localhost:3030/api/divisions', { headers });
       setDivisions(divisionsResponse.data);
-      
 
       // Fetch user details for Admin
       if (role === 'Admin') {
-        const usersResponse = await axios.get('http://localhost:3030/api/users', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
+        const usersResponse = await axios.get('http://localhost:3030/api/users', { headers });
         setUsers(usersResponse.data);
       }
     } catch (error) {
@@ -92,8 +88,8 @@ const Dashboard = ({ onLogout }) => {
               </li>
             )}
 
-            {/* Render Update Credential, View Credentials, Add Credential links for Admin and Manager */}
-            {(userRole === 'Admin' || userRole === 'Manager' || userRole === 'Normal') && (
+            {/* Render Update Credential, View Credentials, Add Credential links for Admin, Manager, and Normal users */}
+            {['Admin', 'Manager', 'Normal'].includes(userRole) && (
               <>
                 <li className="list-group-item">
                   <Link to="/view-credentials" className="text-decoration-none">
@@ -108,7 +104,8 @@ const Dashboard = ({ onLogout }) => {
               </>
             )}
 
-            {(userRole === 'Admin' || userRole === 'Manager') && (
+            {/* Render Update Credential link for Admin and Manager */}
+            {['Admin', 'Manager'].includes(userRole) && (
               <li className="list-group-item">
                 <Link to="/update-credential" className="text-decoration-none">
                   Update Credential
@@ -116,6 +113,7 @@ const Dashboard = ({ onLogout }) => {
               </li>
             )}
           </ul>
+
           {/* Display fetched credentials */}
           {credentials.length > 0 && (
             <div className="mt-4">
@@ -129,6 +127,7 @@ const Dashboard = ({ onLogout }) => {
               </ul>
             </div>
           )}
+
           {/* Display fetched divisions */}
           {divisions.length > 0 && (
             <div className="mt-4">
@@ -142,6 +141,7 @@ const Dashboard = ({ onLogout }) => {
               </ul>
             </div>
           )}
+
           {/* Display fetched users for Admin */}
           {userRole === 'Admin' && users.length > 0 && (
             <div className="mt-4">
@@ -149,7 +149,7 @@ const Dashboard = ({ onLogout }) => {
               <ul className="list-group">
                 {users.map((user) => (
                   <li key={user._id} className="list-group-item">
-                    {user.name} - {user.email}
+                    {user.username} - {user.role}
                     {/* Render actions to assign/unassign users and change roles */}
                     <div className="mt-2">
                       <Link to={`/assign-user/${user._id}`} className="btn btn-sm btn-primary me-2">

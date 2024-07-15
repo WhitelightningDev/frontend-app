@@ -11,7 +11,8 @@ import ManageRoles from './components/ManageRoles';
 import UpdateCredential from './components/UpdateCredential';
 import ViewCredentials from './components/ViewCredentials';
 import AddCredential from './components/AddCredential';
-import Register from './components/Register'; // Import Register component
+import Register from './components/Register';
+import ChangeRole from './components/ChangeRole'; // Import ChangeRole component
 
 function App() {
   const [userRole, setUserRole] = useState(localStorage.getItem('role'));
@@ -41,20 +42,21 @@ function App() {
 
         {/* Define Routes */}
         <Routes>
-          <Route path="/" element={<Home />} /> {/* Home page route */}
-          <Route path="/login" element={<Login onLogin={handleLogin} />} /> {/* Login page route */}
-          <Route path="/register" element={<Register />} /> {/* Register page route */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Protected routes for authenticated users */}
           {userRole && (
             <>
               <Route path="/dashboard" element={<Dashboard userRole={userRole} userName={userName} onLogout={handleLogout} />} />
-              {userRole === 'Admin' && <Route path="/manage-roles" element={<ManageRoles />} />} {/* Admin-only route */}
+              <Route path="/manage-roles" element={<ManageRoles />} />
               {(userRole === 'Admin' || userRole === 'Manager') && (
                 <>
                   <Route path="/update-credential" element={<UpdateCredential />} />
                   <Route path="/view-credentials" element={<ViewCredentials />} />
                   <Route path="/add-credential" element={<AddCredential />} />
+                  <Route path="/change-role/:userId" element={<ChangeRole />} /> {/* Define dynamic route */}
                 </>
               )}
               {userRole === 'Normal' && (
