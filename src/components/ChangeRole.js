@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../services/api';
+import axios from '../services/api'; // Adjust import path based on your project structure
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -24,10 +24,10 @@ const ChangeRole = () => {
           'x-auth-token': token,
         },
       };
-      const response = await axios.get(`/api/users/${userId}/roles`, config);
-      setCurrentRole(response.data.currentRole);
+      const response = await axios.get(`/api/users/${userId}`, config);
+      setCurrentRole(response.data.role); // Assuming response.data.role returns the current role
     } catch (error) {
-      handleRequestError(error, 'Failed to fetch user roles');
+      handleRequestError(error, 'Failed to fetch user role');
     }
   };
 
@@ -41,7 +41,7 @@ const ChangeRole = () => {
         },
       };
       const response = await axios.get('/api/roles', config);
-      setRoles(response.data);
+      setRoles(response.data); // Assuming response.data is an array of roles
     } catch (error) {
       handleRequestError(error, 'Failed to fetch roles');
     }
@@ -58,7 +58,7 @@ const ChangeRole = () => {
           'x-auth-token': token,
         },
       };
-      await axios.put(`/api/users/${userId}/roles`, { newRole }, config);
+      await axios.put(`/api/users/${userId}`, { role: newRole }, config);
       toast.success('Role changed successfully');
       setCurrentRole(newRole); // Update current role in UI
     } catch (error) {
@@ -105,7 +105,7 @@ const ChangeRole = () => {
                 id="newRole"
                 className="form-select"
                 value={newRole}
-                onChange={(e) => setNewRole(e.target.value)}
+                onChange={(e) => setNewRole(e.target.value)} // Update newRole state on change
                 required
               >
                 <option value="">Select Role</option>

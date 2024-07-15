@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3030',
+  baseURL: 'http://localhost:3030', // Adjust base URL according to your backend server
   headers: {
     'Content-Type': 'application/json',
   },
@@ -65,7 +65,7 @@ api.interceptors.response.use(
         }
 
         // Simulate token refresh request (replace with your actual endpoint)
-        const refreshResponse = await axios.post('/auth/refresh-token', {
+        const refreshResponse = await axios.post('/api/auth/refresh-token', {
           refreshToken: localStorage.getItem('refreshToken'),
         });
 

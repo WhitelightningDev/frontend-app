@@ -35,7 +35,7 @@ const ManageRoles = () => {
       const headers = { 'x-auth-token': token };
 
       // Update user role with PUT request
-      await api.put(`/api/users/${userId}/roles`, { role: newRole }, { headers });
+      await api.put(`/api/users/${userId}`, { role: newRole }, { headers });
       toast.success('Role changed successfully');
       fetchUsers(); // Refresh users after role change
     } catch (error) {
