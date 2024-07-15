@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from '../services/api';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import logoImage from '../assets/undraw_website_u6x8.svg'; // Import your image file here
 
 const ViewCredentials = () => {
   const [credentials, setCredentials] = useState([]);
@@ -28,9 +29,16 @@ const ViewCredentials = () => {
           Back to Dashboard
         </Link>
       </div>
+
+      {/* Image */}
+      <div className="text-center mb-4">
+        <img src={logoImage} alt="Logo" style={{ maxWidth: '100%', maxHeight: '150px' }} />
+      </div>
+
       <p className="lead text-center">
         Below are the credentials currently stored in the system. You can view all credentials associated with different divisions.
       </p>
+      
       {credentials.length > 0 ? (
         <ul className="list-group">
           {credentials.map((credential) => (
