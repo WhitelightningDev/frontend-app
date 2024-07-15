@@ -1,9 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from '../services/api';
 import { toast } from 'react-toastify';
 
 const AddCredential = () => {
   const [credential, setCredential] = useState({ title: '', username: '', password: '', division: '' });
+  const [divisions, setDivisions] = useState([]);
+
+  useEffect(() => {
+    fetchDivisions();
+  }, []);
+
+  const fetchDivisions = async () => {
+    try {
+      const response = await axios.get('/api/divisions');
+      setDivisions(response.data);
+    } catch (error) {
+      console.error('Error fetching divisions:', error.message);
+      toast.error('Failed to fetch divisions');
+    }
+  };
 
   const handleChange = (e) => {
     setCredential({ ...credential, [e.target.name]: e.target.value });
@@ -50,17 +65,13 @@ const AddCredential = () => {
         </div>
         <div className="form-group">
           <label htmlFor="division">Division</label>
-          <input type="text" className="form-control" id="division" name="division" value={credential.division} onChange={handleChange} required />
+          <select className="form-control" id="division" name="division" value={credential.division} onChange={handleChange} required>
+            <option value="">Select Division</option>
+            {divisions.map((division) => (
+              <option key={division._id} value={division._id}>{division.name}</option>
+            ))}
+          </select>
         </div>
-      
-        <div className="form-group">
-             <label htmlFor="role">Role</label>
-             <select className="form-control" id="role" name="role" value={credential.role} onChange={handleChange} required>
-               <option value="Admin">Admin</option>
-               <option value="User">Manager</option>
-               <option value="User">User</option>
-             </select>
-           </div> 
         <button type="submit" className="btn btn-primary btn-block">Add Credential</button>
       </form>
     </div>
