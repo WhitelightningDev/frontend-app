@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import api from '../services/api'; // Assuming your axios instance is exported as `api`
+import api from '../services/api';
 import { toast } from 'react-toastify';
 
 const ManageRoles = () => {
-  const [roles, setRoles] = useState(['Admin', 'Manager', 'Normal']); // Hardcoded roles
+  const [roles, setRoles] = useState(['Admin', 'Manager', 'Normal']);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +34,8 @@ const ManageRoles = () => {
       const token = localStorage.getItem('token');
       const headers = { 'x-auth-token': token };
 
-      await api.put(`/api/users/${userId}/roles`, { newRole }, { headers });
+      // Update user role with PUT request
+      await api.put(`/api/users/${userId}/roles`, { role: newRole }, { headers });
       toast.success('Role changed successfully');
       fetchUsers(); // Refresh users after role change
     } catch (error) {
