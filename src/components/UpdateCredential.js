@@ -4,30 +4,24 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const UpdateCredential = () => {
-  const [credential, setCredential] = useState({ title: '', username: '', password: '', division: '' });
+  const [credentials, setCredentials] = useState([]);
+  const [selectedCredential, setSelectedCredential] = useState(null);
   const [divisions, setDivisions] = useState([]);
   const navigate = useNavigate();
-  const { id } = useParams(); // Ensure id is correctly extracted from URL
+  const { id } = useParams();
 
   useEffect(() => {
-    if (id) {
-      fetchCredential();
-    }
+    fetchCredentials();
     fetchDivisions();
-  }, [id]); // Trigger fetch functions when id changes
+  }, []);
 
-  const fetchCredential = async () => {
+  const fetchCredentials = async () => {
     try {
-      const response = await axios.get(`/api/credentials/${id}`);
-      setCredential({
-        title: response.data.title,
-        username: response.data.username,
-        password: response.data.password,
-        division: response.data.division._id,
-      });
+      const response = await axios.get('/api/credentials');
+      setCredentials(response.data);
     } catch (error) {
-      console.error('Error fetching credential:', error.message);
-      toast.error('Failed to fetch credential');
+      console.error('Error fetching credentials:', error.message);
+      toast.error('Failed to fetch credentials');
     }
   };
 
@@ -41,16 +35,24 @@ const UpdateCredential = () => {
     }
   };
 
+  const handleSelectCredential = (credential) => {
+    setSelectedCredential({
+      ...credential,
+      division: credential.division?._id || '', // Safely access division ID
+    });
+  };
+
   const handleChange = (e) => {
-    setCredential({ ...credential, [e.target.name]: e.target.value });
+    setSelectedCredential({ ...selectedCredential, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/credentials/${id}`, credential);
+      await axios.put(`/api/credentials/${selectedCredential._id}`, selectedCredential);
       toast.success('Credential updated successfully');
-      navigate('/view-credentials');
+      fetchCredentials(); // Refresh credentials list after update
+      setSelectedCredential(null);
     } catch (error) {
       console.error('Error updating credential:', error.message);
       toast.error('Failed to update credential');
@@ -59,44 +61,91 @@ const UpdateCredential = () => {
 
   return (
     <div className="container mt-5">
-      <div className="row">
-        <div className="col-md-8 offset-md-2">
-          <div className="card">
-            <h5 className="card-header text-center">Update Credential</h5>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="title">Title</label>
-                  <input type="text" className="form-control" id="title" name="title" value={credential.title} onChange={handleChange} required />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="username">Username</label>
-                  <input type="text" className="form-control" id="username" name="username" value={credential.username} onChange={handleChange} required />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="password">Password</label>
-                  <input type="password" className="form-control" id="password" name="password" value={credential.password} onChange={handleChange} required />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="division">Division</label>
-                  <select className="form-control" id="division" name="division" value={credential.division} onChange={handleChange} required>
-                    <option value="">Select Division</option>
-                    {divisions.map((division) => (
-                      <option key={division._id} value={division._id}>
-                        {division.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <button type="submit" className="btn btn-primary btn-block">Update Credential</button>
-              </form>
-            </div>
+      <h1 className="mb-4 text-center">Update Credentials</h1>
+      <ul className="list-group">
+        {credentials.map((credential) => (
+          <li key={credential._id} className="list-group-item">
+            <h5>{credential.title}</h5>
+            <p>Username: {credential.username}</p>
+            <p>Division: {credential.division?.name || 'No Division'}</p> {/* Safely access division name */}
+            <button
+              className="btn btn-primary"
+              onClick={() => handleSelectCredential(credential)}
+            >
+              Update
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {selectedCredential && (
+        <div className="card mt-3">
+          <h5 className="card-header text-center">Update Credential</h5>
+          <div className="card-body">
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="title">Title</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="title"
+                  name="title"
+                  value={selectedCredential.title}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="username">Username</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="username"
+                  name="username"
+                  value={selectedCredential.username}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  name="password"
+                  value={selectedCredential.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="division">Division</label>
+                <select
+                  className="form-control"
+                  id="division"
+                  name="division"
+                  value={selectedCredential.division}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Division</option>
+                  {divisions.map((division) => (
+                    <option key={division._id} value={division._id}>
+                      {division.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button type="submit" className="btn btn-primary btn-block">Update Credential</button>
+            </form>
           </div>
-          <button className="btn btn-secondary mt-3" onClick={() => navigate('/dashboard')}>
-            Back to Dashboard
-          </button>
         </div>
-      </div>
+      )}
+
+      <button className="btn btn-secondary mt-3" onClick={() => navigate('/dashboard')}>
+        Back to Dashboard
+      </button>
     </div>
   );
 };
