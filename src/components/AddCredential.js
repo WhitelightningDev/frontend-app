@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../services/api';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const AddCredential = () => {
   const [credential, setCredential] = useState({ title: '', username: '', password: '', division: '' });
   const [divisions, setDivisions] = useState([]);
+  const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
     fetchDivisions();
@@ -50,6 +52,9 @@ const AddCredential = () => {
   return (
     <div className="container mt-5">
       <h1 className="mb-4 text-center">Add Credential</h1>
+      <p className="lead text-center">
+        Fill out the form below to add a new credential. Once added, you can view and manage all credentials from the dashboard.
+      </p>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="title">Title</label>
@@ -73,6 +78,9 @@ const AddCredential = () => {
           </select>
         </div>
         <button type="submit" className="btn btn-primary btn-block">Add Credential</button>
+        <button type="button" className="btn btn-secondary btn-block mt-3" onClick={() => navigate('/dashboard')}>
+          Back to Dashboard
+        </button>
       </form>
     </div>
   );

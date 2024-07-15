@@ -13,7 +13,7 @@ import ViewCredentials from './components/ViewCredentials';
 import AddCredential from './components/AddCredential';
 import Register from './components/Register';
 import ChangeRole from './components/ChangeRole'; // Import ChangeRole component
-import AssignUserToDivision from './components/AssignUser'; // Import AssignUserToDivision component
+
 
 function App() {
   const [userRole, setUserRole] = useState(localStorage.getItem('role'));
@@ -58,7 +58,7 @@ function App() {
                   <Route path="/view-credentials" element={<ViewCredentials />} />
                   <Route path="/add-credential" element={<AddCredential />} />
                   <Route path="/change-role/:userId" element={<ChangeRole />} /> {/* Define dynamic route */}
-                  <Route path="/assign-user-to-division/:userId" element={<AssignUserToDivision />} /> {/* Define dynamic route */}
+                  
                 </>
               )}
               {userRole === 'Normal' && (
