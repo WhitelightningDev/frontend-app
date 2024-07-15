@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -153,9 +152,6 @@ const Dashboard = ({ onLogout }) => {
                     {user.username} - {user.role}
                     {/* Render actions to assign/unassign users and change roles */}
                     <div className="mt-2">
-                      <Link to={`/assign-user/${user._id}`} className="btn btn-sm btn-primary me-2">
-                        Assign/Unassign User
-                      </Link>
                       <Link to={`/change-role/${user._id}`} className="btn btn-sm btn-warning">
                         Change Role
                       </Link>
