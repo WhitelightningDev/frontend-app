@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React, { useState, useEffect } from 'react'; // Import React and necessary hooks
+import { useNavigate, Link } from 'react-router-dom'; // Import routing utilities
+import axios from 'axios'; // Import axios for HTTP requests
+import { toast } from 'react-toastify'; // Import toast for notifications
 
 const Dashboard = ({ onLogout }) => {
-  const navigate = useNavigate();
-  const [credentials, setCredentials] = useState([]);
-  const [divisions, setDivisions] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [userRole, setUserRole] = useState('');
-  const [userName, setUserName] = useState('');
+  const navigate = useNavigate(); // Initialize navigation hook
+  const [credentials, setCredentials] = useState([]); // State for storing credentials
+  const [divisions, setDivisions] = useState([]); // State for storing divisions
+  const [users, setUsers] = useState([]); // State for storing users (for Admin)
+  const [userRole, setUserRole] = useState(''); // State for storing current user's role
+  const [userName, setUserName] = useState(''); // State for storing current user's name
 
   useEffect(() => {
-    const role = localStorage.getItem('role');
-    const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role'); // Retrieve role from local storage
+    const username = localStorage.getItem('username'); // Retrieve username from local storage
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
 
     if (!role || !username || !token) {
       // Redirect to login if userRole, userName, or token is not defined
@@ -26,11 +26,11 @@ const Dashboard = ({ onLogout }) => {
       // Fetch data based on user's role
       fetchDataBasedOnRole(role, token);
     }
-  }, [navigate]);
+  }, [navigate]); // Dependency array includes navigate
 
   const fetchDataBasedOnRole = async (role, token) => {
     try {
-      const headers = { 'x-auth-token': token };
+      const headers = { 'x-auth-token': token }; // Set headers with token
 
       // Fetch all credentials
       const credentialsResponse = await axios.get('http://localhost:3030/api/credentials', { headers });
@@ -57,9 +57,9 @@ const Dashboard = ({ onLogout }) => {
     localStorage.removeItem('role');
     localStorage.removeItem('token');
     localStorage.removeItem('username');
-    onLogout();
-    navigate('/login');
-    toast.success('Logged out successfully.');
+    onLogout(); // Call onLogout function
+    navigate('/login'); // Redirect to login
+    toast.success('Logged out successfully.'); // Show success message
   };
 
   return (
@@ -87,7 +87,7 @@ const Dashboard = ({ onLogout }) => {
             {userRole === 'Admin' && (
               <li className="list-group-item">
                 <Link to="/manage-roles" className="text-decoration-none">
-                  Manage Roles: View, assign, and modify roles for users.
+                  Manage Roles: View, and modify users.
                 </Link>
               </li>
             )}
@@ -112,7 +112,7 @@ const Dashboard = ({ onLogout }) => {
             {['Admin', 'Manager'].includes(userRole) && (
               <li className="list-group-item">
                 <Link to="/update-credential" className="text-decoration-none">
-                  Update Credential: Modify existing credentials.
+                  Update Credential: Modify existing credentials assign and unassign users.
                 </Link>
               </li>
             )}

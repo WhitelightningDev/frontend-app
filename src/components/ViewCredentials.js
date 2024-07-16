@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import axios from '../services/api';
-import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'; // Import necessary hooks from React
+import axios from '../services/api'; // Import axios instance for API calls
+import { toast } from 'react-toastify'; // Import toast for notifications
+import { Link } from 'react-router-dom'; // Import Link for navigation
 import logoImage from '../assets/undraw_website_u6x8.svg'; // Import your image file here
 
 const ViewCredentials = () => {
+  // Define state for storing credentials
   const [credentials, setCredentials] = useState([]);
 
+  // useEffect hook to fetch credentials when the component mounts
   useEffect(() => {
     fetchCredentials();
   }, []);
 
+  // Function to fetch credentials from the API
   const fetchCredentials = async () => {
     try {
-      const response = await axios.get('/api/credentials');
-      setCredentials(response.data);
+      const response = await axios.get('/api/credentials'); // API call to get credentials
+      setCredentials(response.data); // Set the credentials state with the fetched data
     } catch (error) {
-      console.error('Error fetching credentials:', error.message);
-      toast.error('Failed to fetch credentials');
+      console.error('Error fetching credentials:', error.message); // Log the error
+      toast.error('Failed to fetch credentials'); // Show error notification
     }
   };
 
@@ -30,7 +33,7 @@ const ViewCredentials = () => {
         </Link>
       </div>
 
-      {/* Image */}
+      {/* Image section */}
       <div className="text-center mb-4">
         <img src={logoImage} alt="Logo" style={{ maxWidth: '100%', maxHeight: '150px' }} />
       </div>
@@ -40,6 +43,7 @@ const ViewCredentials = () => {
       </p>
       
       {credentials.length > 0 ? (
+        // List of credentials
         <ul className="list-group">
           {credentials.map((credential) => (
             <li key={credential._id} className="list-group-item">
@@ -50,6 +54,7 @@ const ViewCredentials = () => {
           ))}
         </ul>
       ) : (
+        // Message when no credentials are found
         <p className="text-center mt-4">No credentials found.</p>
       )}
     </div>

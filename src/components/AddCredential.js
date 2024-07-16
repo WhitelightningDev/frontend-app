@@ -1,36 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import axios from '../services/api';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'; // Import necessary hooks from React
+import axios from '../services/api'; // Import axios instance for API calls
+import { toast } from 'react-toastify'; // Import toast for notifications
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 const AddCredential = () => {
+  // Define state for the new credential and the list of divisions
   const [credential, setCredential] = useState({ title: '', username: '', password: '', division: '' });
   const [divisions, setDivisions] = useState([]);
   const navigate = useNavigate(); // Hook for navigation
 
+  // useEffect hook to fetch divisions when the component mounts
   useEffect(() => {
     fetchDivisions();
   }, []);
 
+  // Function to fetch divisions from the API
   const fetchDivisions = async () => {
     try {
-      const response = await axios.get('/api/divisions');
-      setDivisions(response.data);
+      const response = await axios.get('/api/divisions'); // API call to get divisions
+      setDivisions(response.data); // Set the divisions state with the fetched data
     } catch (error) {
-      console.error('Error fetching divisions:', error.message);
-      toast.error('Failed to fetch divisions');
+      console.error('Error fetching divisions:', error.message); // Log the error
+      toast.error('Failed to fetch divisions'); // Show error notification
     }
   };
 
+  // Function to handle input changes and update the credential state
   const handleChange = (e) => {
     setCredential({ ...credential, [e.target.name]: e.target.value });
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
     try {
-      await axios.post('/api/credentials', credential);
-      toast.success('Credential added successfully');
+      await axios.post('/api/credentials', credential); // API call to add a new credential
+      toast.success('Credential added successfully'); // Show success notification
       setCredential({ title: '', username: '', password: '', division: '' }); // Reset form fields
     } catch (error) {
       if (error.response) {

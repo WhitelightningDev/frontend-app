@@ -5,19 +5,22 @@ import { toast } from 'react-toastify';
 import logoSVG from '../assets/undraw_secure_login_pdn4.svg'; // Import your SVG file here
 
 const Login = ({ onLogin }) => {
+  // State to manage the credentials input by the user
   const [credentials, setCredentials] = useState({ username: '', password: '' });
+  // State to manage the loading status of the login request
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Handle input change
   const handleChange = (e) => {
+    // Update the credentials state with the new input value
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault(); // Prevent the default form submission behavior
+    setLoading(true); // Set loading state to true
     try {
       // Send login request
       const response = await axios.post('/api/auth/login', credentials);
@@ -45,10 +48,10 @@ const Login = ({ onLogin }) => {
       // Show success message
       toast.success(`Login successful! Welcome, ${username}`);
     } catch (error) {
-      setLoading(false);
+      setLoading(false); // Set loading state to false
       console.error('Login error:', error);
 
-      // Show error message
+      // Show error message based on the error response
       if (error.response && error.response.data) {
         toast.error(error.response.data.msg || 'Login failed. Please try again.');
       } else if (error.message) {
