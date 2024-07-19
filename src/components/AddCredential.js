@@ -1,53 +1,57 @@
-import React, { useState, useEffect } from 'react'; // Import necessary hooks from React
-import axios from '../services/api'; // Import axios instance for API calls
-import { toast } from 'react-toastify'; // Import toast for notifications
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import React, { useState, useEffect } from 'react';
+import axios from '../services/api';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const AddCredential = () => {
-  // Define state for the new credential and the list of divisions
-  const [credential, setCredential] = useState({ title: '', username: '', password: '', division: '' });
+  const [credential, setCredential] = useState({ title: '', username: '', password: '', division: '', ou: '' });
   const [divisions, setDivisions] = useState([]);
-  const navigate = useNavigate(); // Hook for navigation
+  const [ous, setOus] = useState([]);
+  const navigate = useNavigate();
 
-  // useEffect hook to fetch divisions when the component mounts
   useEffect(() => {
     fetchDivisions();
+    fetchOus();
   }, []);
 
-  // Function to fetch divisions from the API
   const fetchDivisions = async () => {
     try {
-      const response = await axios.get('/api/divisions'); // API call to get divisions
-      setDivisions(response.data); // Set the divisions state with the fetched data
+      const response = await axios.get('/api/divisions');
+      setDivisions(response.data);
     } catch (error) {
-      console.error('Error fetching divisions:', error.message); // Log the error
-      toast.error('Failed to fetch divisions'); // Show error notification
+      console.error('Error fetching divisions:', error.message);
+      toast.error('Failed to fetch divisions');
     }
   };
 
-  // Function to handle input changes and update the credential state
+  const fetchOus = async () => {
+    try {
+      const response = await axios.get('/api/ous');
+      setOus(response.data);
+    } catch (error) {
+      console.error('Error fetching OUs:', error.message);
+      toast.error('Failed to fetch OUs');
+    }
+  };
+
   const handleChange = (e) => {
     setCredential({ ...credential, [e.target.name]: e.target.value });
   };
 
-  // Function to handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
-      await axios.post('/api/credentials', credential); // API call to add a new credential
-      toast.success('Credential added successfully'); // Show success notification
-      setCredential({ title: '', username: '', password: '', division: '' }); // Reset form fields
+      await axios.post('/api/credentials', credential);
+      toast.success('Credential added successfully');
+      setCredential({ title: '', username: '', password: '', division: '', ou: '' });
     } catch (error) {
       if (error.response) {
-        // Server responded with an error status code
         console.error('Error adding credential:', error.response.data);
         toast.error(`Failed to add credential: ${error.response.data.msg}`);
       } else if (error.request) {
-        // Request made but no response received
         console.error('Error adding credential:', error.request);
         toast.error('Failed to add credential: No response received from server');
       } else {
-        // Something happened in setting up the request
         console.error('Error adding credential:', error.message);
         toast.error('Failed to add credential: Request setup failed');
       }
@@ -79,6 +83,15 @@ const AddCredential = () => {
             <option value="">Select Division</option>
             {divisions.map((division) => (
               <option key={division._id} value={division._id}>{division.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="ou">Organizational Unit</label>
+          <select className="form-control" id="ou" name="ou" value={credential.ou} onChange={handleChange} required>
+            <option value="">Select OU</option>
+            {ous.map((ou) => (
+              <option key={ou._id} value={ou._id}>{ou.name}</option>
             ))}
           </select>
         </div>
